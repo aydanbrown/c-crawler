@@ -1,0 +1,58 @@
+CREATE TABLE articles ( 
+  id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY, 
+  title VARCHAR(200), 
+  body TEXT, 
+  FULLTEXT (title),
+	FULLTEXT (body),
+	FULLTEXT (title,body));
+
+
+INSERT INTO articles (title,body) VALUES 
+  ('MySQL Tutorial','DBMS stands for DataBase ...'), 
+  ('How To Use MySQL Well','After you went through a ...'), 
+  ('Optimizing MySQL','In this tutorial we will show ...'), 
+  ('1001 MySQL Tricks','1. Never run mysqld as root. 2. ...'), 
+  ('MySQL vs. YourSQL','In the following database comparison ...'), 
+  ('MySQL Security','When configured properly, MySQL ...');
+
+
+select round(match(title,body) against ('tutorial'), 7) as R from articles limit 1;
+
+
+SELECT id, title, body, MATCH (title,body)  AGAINST ('database fulltext' IN BOOLEAN MODE) AS score FROM articles ORDER BY score DESC;
+
+
+SELECT pages.*,
+       MATCH (head, body) AGAINST ('some words') AS relevance,
+       MATCH (head) AGAINST ('some words') AS title_relevance
+FROM pages
+WHERE MATCH (head, body) AGAINST ('some words')
+ORDER BY title_relevance DESC, relevance DESC
+
+-- alternatively:
+ORDER BY title_relevance + relevance DESC
+
+
+SELECT MATCH('Content') AGAINST ('keyword1 keyword2') as Relevance 
+FROM table 
+WHERE MATCH ('Content') AGAINST('+keyword1+keyword2' IN BOOLEAN MODE) 
+HAVING Relevance > 0.2 
+ORDER BY Relevance DESC
+
+SELECT id, title, 
+				MATCH (title,body)  AGAINST ('dbms') AS score,
+				MATCH (title)  AGAINST ('dbms') AS title_score
+FROM articles 
+WHERE MATCH (title,body) AGAINST ('dbms' IN BOOLEAN MODE) 
+HAVING score > 0.2 
+ORDER BY title_score + score DESC;
+
+SELECT *,
+(
+	(1.3 * (MATCH(title) AGAINST ('+mysql +tutorial' IN BOOLEAN MODE))) +
+	(0.6 * (MATCH(body) AGAINST ('+mysql +tutorial' IN BOOLEAN MODE)))
+) AS relevance
+FROM articles
+WHERE ( MATCH(title,body) AGAINST ('+mysql +tutorial' IN BOOLEAN MODE) )
+HAVING relevance > 0
+ORDER BY relevance DESC;

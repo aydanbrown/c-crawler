@@ -31,47 +31,55 @@ char is_url_char () {
 	return 0;
 }
 
-int next_line_break (char *ch, FILE file) {
+int next_line_break (char ch, FILE *file) {
 	int i = 0;
 	while(1) {
-		if(feof(file)) { return; }
-		if(ch == '\\') {
-			ch = fgetc(file);
-			if(ch == 'n') { return; }
+		if(feof(file)) { break; }
+		if(ch == '\n') {
+			break;
 		}
 		ch = fgetc(file);
 		i++;
 	}
+	//printf("%i\n", i);
 	return i;
 }
 
 void write_url (char *path, int size) {
-	FILE *out = fopen("urls.txt", "w+");
-	int ch;
+	FILE *read = fopen("urls.txt", "r");
+	char ch;
 	int i = 0;
 
 	while (1) {
-		if (feof(out)) {
-			fputs(path, out);
-			fputs(' ', out);
-			printf("appended %s\n", path);
+		if (feof(read)) {
+			FILE *write = fopen("urls.txt", "a");
+			for(int i = 0; i < size; i++) {
+				fprintf(write, "%c", path[i]);
+			}
+			fprintf(write, "\n");
+			fclose(write);
 			break;
 		}
 
-		if (i == size && next_line_break(ch, out) == 0) {
-			i = 0;
-			printf("duplicate %s\n", path);
-			return;
-		} else if (path[i] != ch) {
-			next_line_break(ch, out);
-			i = 0;
-		} else {
-			ch = fgetc(out);
+		if (i == size) {
+			int chars = next_line_break(ch, read); 
+			printf("%i", chars);
+			if(chars == 0) {
+				i = 0;
+				printf("duplicate\n");
+				return;
+			}
+		} else if (path[i] == ch) {
+			ch = fgetc(read);
 			i++;
+			printf("%i", i);
+		} else {
+			next_line_break(ch, read);
+			i = 0;
 		}
 	}
 
-	fclose(out);
+	fclose(read);
 }
 
 void process_path () {
@@ -84,7 +92,9 @@ void process_path () {
 	if(size > 1 && in != 0) {
 		char path[size];
 		fseek(in, -size - 1, 1);
-		fread(path, 1, size - 1, in);
+		fread(path, 1, size, in);
+		//for(int i = 0; i < size; i++) { printf("%c", path[i]); }
+		//printf("\n");
 		write_url(path, size);
 	}
 }
