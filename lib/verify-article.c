@@ -1,12 +1,17 @@
 #include <stdio.h>
 
-#define element_count 3
+#define element_count 1
 
+/*
 char *elements[element_count] = {
 	"itemprop=\"contentUrl\"",
 	"itemprop=\"articleBody\"",
 	"itemprop=\"datePublished\""
 };
+*/
+char *elements[element_count] = {
+	"<meta property=\"og:type\" content=\"article\"/>"
+}
 
 int check[element_count];
 
