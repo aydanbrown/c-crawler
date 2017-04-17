@@ -18,7 +18,7 @@ install:
 	make build
 
 database:
-	node create-database.js
+	node nlib/database.js
 
 clean:
 	sudo rm /crawler/downloads/* && \
