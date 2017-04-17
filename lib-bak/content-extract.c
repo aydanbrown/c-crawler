@@ -1,3 +1,10 @@
+/*
+Function return values:
+	-1 = End of file
+	0 = Success
+	1 or more = Error
+*/
+
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -14,6 +21,7 @@ FILE *write_files[TAG_COUNT];
 
 char c;
 
+int init(char *path);
 void next();
 int start();
 int match_tag(int *tag);
@@ -23,24 +31,18 @@ int close_tag();
 int close_string();
 int write(int tag);
 
-// content-extract input_file output_folder
-int main(int argc, char *argv[])
-{
-	read_file = fopen(argv[1], "r");
-	//char output_path[100];
-	//sprintf(output_path, "%s/content", argv[2]);
-	//mkdir(output_path, 777);
 
-	// printf("%s\n", output_path);
+int init(char *path)
+{
+	read_file = fopen(path, "r");
+	mkdir("content", 777);
 
 	for(int i = 0; i < TAG_COUNT; i++)
 	{
 		char dir[100];
-		sprintf(dir, "%s/content/%s", argv[2], tags[i]);
+		sprintf(dir, "content/%s", tags[i]);
 		write_files[i] = fopen(dir, "a");
 	}
-
-	start();
 
 	return 0;
 }
@@ -50,6 +52,7 @@ void next()
 	c = fgetc(read_file);
 }
 
+// Start the extraction process until the end of the file
 int start()
 {
 	while(!feof(read_file))
@@ -239,4 +242,10 @@ int write(int tag)
 	}
 
 	return 0;
+}
+
+int main(void)
+{
+	init(42, "page.html");
+	start();
 }

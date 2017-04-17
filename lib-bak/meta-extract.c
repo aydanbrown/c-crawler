@@ -1,3 +1,10 @@
+/*
+Function return values:
+	-1 = End of file
+	0 = Success
+	1 or more = Error
+*/
+
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -16,10 +23,9 @@ char attributes[META_COUNT][MAX_META_SIZE] = {
 FILE *read_file;
 int extracted[META_COUNT];
 
-char output_path[100];
-
 char c;
 
+int init(char *path);
 void next();
 int next_open_tag();
 int match_meta_tag();
@@ -31,12 +37,9 @@ int next_open_string();
 int match_string();
 int close_string();
 
-// meta-extract input_file output_folder
-int main(int argc, char *argv[])
+int main(void)
 {
-	read_file = fopen(argv[1], "r");
-	sprintf(output_path, "%s/meta", argv[2]);
-	//mkdir(output_path, 777);
+	init("page.html");
 
 	while(!feof(read_file))
 	{
@@ -84,6 +87,14 @@ int main(int argc, char *argv[])
 	}
 
 	printf("File ended\n");
+
+	return 0;
+}
+
+int init(char *path)
+{
+	read_file = fopen(path, "r");
+	mkdir("meta", 775);
 
 	return 0;
 }
@@ -228,7 +239,7 @@ int get_name_attribute(int * attribute)
 	{
 		while(c == ' ') { next(); }
 		if(c == '>') { return 1; }
-
+		
 		if(next_match_string(c == 'n' ? "name=\"" : "property=\"") == 0)
 		{
 			int ch = 0;
@@ -239,7 +250,7 @@ int get_name_attribute(int * attribute)
 			while(c != '"')
 			{
 				if(feof(read_file)) { return -1; }
-
+				
 				int match_count = 0;
 
 				for(int i = 0; i < META_COUNT; i++)
@@ -301,11 +312,11 @@ int write_value_attribute(int file)
 	{
 		while(c == ' ') { next(); }
 		if(c == '>') { return 1; }
-
+		
 		if(next_match_string("content=\"") == 0)
 		{
 			char dir[100];
-			sprintf(dir, "%s/%s", output_path, attributes[file]);
+			sprintf(dir, "meta/%s", attributes[file]);
 			FILE *write_file = fopen(dir, "a");
 			while(!feof(read_file))
 			{
@@ -361,7 +372,7 @@ int match_string(char *string)
 	}
 
 	return -1;
-}
+}	
 
 int close_string()
 {

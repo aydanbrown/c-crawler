@@ -2,9 +2,16 @@
 
 #define element_count 1
 
+/*
+char *elements[element_count] = {
+	"itemprop=\"contentUrl\"",
+	"itemprop=\"articleBody\"",
+	"itemprop=\"datePublished\""
+};
+*/
 char *elements[element_count] = {
 	"<meta property=\"og:type\" content=\"article\"/>"
-};
+}
 
 int check[element_count];
 
@@ -17,10 +24,9 @@ void next()
 	c = fgetc(file);
 }
 
-// verify-article input_file
-int main(int argc, char *argv[])
+int match()
 {
-	file = fopen(argv[1], "r");
+	file = fopen("page.html", "r");
 
 	next();
 
@@ -59,3 +65,18 @@ int main(int argc, char *argv[])
 
 	return 1;
 }
+
+int main(void)
+{
+	if(match() == 0)
+	{
+		printf("Verified\n");
+	}
+	else
+	{
+		printf("Invalid\n");
+	}
+
+	return 0;
+}
+
