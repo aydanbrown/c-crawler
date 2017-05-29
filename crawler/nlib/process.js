@@ -4,28 +4,22 @@ const log = require('./log');
 
 const article = {
   content: {
-    title: "title",
     h1: "h1",
-    h2: "h2",
-    h3: "h3",
-    h4: "h4",
-    h5: "h5",
-    h6: "h6",
-    p: "p"
+    h2: "h2"
   },
   meta: {
-    author: "author",
     description: "description",
     keywords: "keywords",
     "article:section": "section",
-    "article:published_time": "published"
+    "article:published_time": "published",
+    "og:title": "title"
   }
 }
 
 var config;
 var connection;
 
-function process(id, callback) {
+function process(id, url, callback) {
   var input = config.download_dir + "/" + id;
   if(!fs.existsSync(input)) return callback("File does not exist: " + input);
   upload_urls(input, function(err) {
@@ -38,7 +32,7 @@ function process(id, callback) {
           if(err) log.err("Error while extracting content, continuing...");
           extract_metadata(input, function(err) {
             if(err) log.err("Error while extracting metadata, continuing...");
-            upload_article(id, function(err) {
+            upload_article(url, function(err) {
               clean(input, function() { callback(err, true); });
             });
           })
@@ -94,9 +88,9 @@ function extract_metadata(input, callback) {
   execute("meta-extract", [input, config.process_dir], callback);
 }
 
-function upload_article(id, callback) {
-  var columns = ["url_ref"];
-  var values = [id];
+function upload_article(url, callback) {
+  var columns = ["url"];
+  var values = [url];
   for(var folder in article) {
     for(var file in article[folder]) {
       var col = article[folder][file]

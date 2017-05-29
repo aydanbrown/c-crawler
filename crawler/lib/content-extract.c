@@ -2,11 +2,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define TAG_COUNT 8
-#define MAX_TAG_SIZE 7
+#define TAG_COUNT 2
+#define MAX_TAG_SIZE 3
 
 char tags[TAG_COUNT][MAX_TAG_SIZE] = {
-	"title", "h1", "h2", "h3", "h4", "h5", "h6", "p"
+	"h1", "h2"
 };
 
 FILE *read_file;

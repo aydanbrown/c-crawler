@@ -13,14 +13,8 @@ module.exports = {
     title: 1000,
     description: 1000,
     keywords: 500,
-    author: 200,
     section: 100,
     h1: 1000,
-    h2: 2000,
-    h3: 1000,
-    h4: 200,
-    h5: 200,
-    h6: 200,
-    p: 30000
+    h2: 1000
   }
 }

@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-const config = require("./nlib/config");
+const config = require("./config");
 
 var db_name = "crawler";
 
@@ -15,21 +15,31 @@ var tables = {
   ],
   content: [
     "id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT",
-    "url_ref INT UNSIGNED NOT NULL UNIQUE",
+    "url VARCHAR(300) NOT NULL UNIQUE",
     "title VARCHAR(" + config.size.title + ")",
     "description VARCHAR(" + config.size.description + ")",
     "keywords VARCHAR(" + config.size.keywords + ")",
-    "author VARCHAR(" + config.size.author + ")",
     "section VARCHAR(" + config.size.section + ")",
-    "published TIMESTAMP",
+    "published DATETIME",
     "h1 VARCHAR(" + config.size.h1 + ")",
     "h2 VARCHAR(" + config.size.h2 + ")",
-    "h3 VARCHAR(" + config.size.h3 + ")",
-    "h4 VARCHAR(" + config.size.h4 + ")",
-    "h5 VARCHAR(" + config.size.h5 + ")",
-    "h6 VARCHAR(" + config.size.h6 + ")",
-    "p VARCHAR(" + config.size.p + ")",
-    "added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+    "added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    "FULLTEXT(title)",
+    "FULLTEXT(description)",
+    "FULLTEXT(keywords)",
+    "FULLTEXT(section)",
+    "FULLTEXT(h1)",
+    "FULLTEXT(h2)",
+    "FULLTEXT(title, description, keywords, section, h1, h2)"
+  ],
+  metrics: [
+    "ts TIMESTAMP PRIMARY KEY DEFAULT CURRENT_TIMESTAMP",
+    "urls INT UNSIGNED",
+    "downloads INT UNSIGNED",
+    "processed INT UNSIGNED",
+    "articles INT UNSIGNED",
+    "failed_downloads INT UNSIGNED",
+    "failed_processed INT UNSIGNED",
   ]
 }
 

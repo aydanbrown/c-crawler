@@ -23,18 +23,19 @@ log.clr = function(val, clr) {
 }
 
 log.err = function(val, err) {
-  console.log(c.red);
+  // console.log(c.red);
   if(err) {
     console.log(val);
     console.error(err);
   } else {
     console.error(val);
   }
-  console.log(c.reset);
+  // console.log(c.reset);
 }
 
 log.wrn = function(val) {
-  console.log(c.yellow + val + c.reset);
+  // console.log(c.yellow + val + c.reset);
+  console.log(val);
 }
 
 module.exports = log;

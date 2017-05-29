@@ -6,11 +6,11 @@
 #define MAX_META_SIZE 25
 
 char attributes[META_COUNT][MAX_META_SIZE] = {
-	"author",
   "description",
   "keywords",
   "article:section",
-  "article:published_time"
+  "article:published_time",
+	"og:title"
 };
 
 FILE *read_file;
